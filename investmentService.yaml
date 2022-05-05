@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: investment-service
+spec:
+  selector:
+    matchLabels:
+      app: investment-service
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: investment-service
+    spec:
+      containers:
+      - image: fragg90/investment-service:1.0.0
+        name: investment-service
+        env:
+        - name: spring.datasource.url
+          value: jdbc:mysql://mysql:3307/investment_kafka_ms_test?characterEncoding=utf8&serverTimezone=CET&createDatabaseIfNotExist=true
+        - name: spring.datasource.username
+          value: root
+        - name: spring.datasource.password
+          value: root
+        - name: eureka.client.serviceUrl.defaultZone
+          value: http://eureka:8762/eureka
+        ports:
+        - containerPort: 8065
+          name: inv-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invservice
+spec:
+  type: NodePort
+  ports:
+  - port: 3307
+    nodePort: 30005
+    targetPort: 8069
+  selector:
+    app: investment-service
