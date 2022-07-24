@@ -18,13 +18,25 @@ spec:
         name: investment-service
         env:
         - name: spring.datasource.url
-          value: jdbc:mysql://mysql:3307/investment_kafka_ms_test?characterEncoding=utf8&serverTimezone=CET&createDatabaseIfNotExist=true
+          valueFrom:
+            configMapKeyRef:
+              name: finance-manager-configmap
+              key: datasource.investment
         - name: spring.datasource.username
-          value: root
+          valueFrom:
+            configMapKeyRef:
+              name: finance-manager-configmap
+              key: db.user
         - name: spring.datasource.password
-          value: root
+          valueFrom:
+            configMapKeyRef:
+              name: finance-manager-configmap
+              key: db.password
         - name: eureka.client.serviceUrl.defaultZone
-          value: http://eureka:8762/eureka
+          valueFrom:
+            configMapKeyRef:
+              name: finance-manager-configmap
+              key: eureka.serviceUrl
         ports:
         - containerPort: 8065
           name: inv-service
