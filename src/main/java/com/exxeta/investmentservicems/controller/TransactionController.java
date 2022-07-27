@@ -1,6 +1,7 @@
 package com.exxeta.investmentservicems.controller;
 
 import com.exxeta.investmentservice.entities.Transaction;
+import com.exxeta.investmentservice.service.InvestmentService;
 import com.exxeta.investmentservice.service.TransactionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -16,18 +17,20 @@ import javax.validation.Valid;
 public class TransactionController {
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private final InvestmentService investmentService;
 
     private final TransactionHandler transactionHandler;
 //    private final AccountService accountService;
 
     private final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
-    public TransactionController(TransactionHandler transactionHandler) {
+    public TransactionController(InvestmentService investmentService, TransactionHandler transactionHandler) {
+        this.investmentService = investmentService;
         this.transactionHandler = transactionHandler;
 //        this.accountService = accountService;
     }
 
-    @PostMapping(path = "/transaction")
+    @PostMapping(path = "/transactions")
     @ResponseStatus(HttpStatus.CREATED)
     public String addNewTransaction(@PathVariable long userId, @Valid @RequestBody Transaction transaction) {
         logger.info("Received transaction: " + transaction);
@@ -36,6 +39,15 @@ public class TransactionController {
             transactionHandler.handleTransaction(transaction);
 //            changeAccountBalance(transaction);
             return mapper.writeValueAsString(transaction);
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
+    }
+
+    @GetMapping(path = "/transactions")
+    public String getAllTransactions(@PathVariable long userId) {
+        try {
+            return mapper.writeValueAsString(investmentService.getAllTransactions(userId));
         } catch (Exception exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
