@@ -1,6 +1,6 @@
 package com.exxeta.investmentservicems.controller;
 
-import com.exxeta.investmentservice.dtos.TransactionDto;
+import com.exxeta.investmentservicems.dtos.TransactionDto;
 import com.exxeta.investmentservice.entities.Security;
 import com.exxeta.investmentservice.entities.Transaction;
 import com.exxeta.investmentservice.service.InvestmentService;
