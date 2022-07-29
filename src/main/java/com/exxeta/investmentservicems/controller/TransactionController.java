@@ -1,5 +1,7 @@
 package com.exxeta.investmentservicems.controller;
 
+import com.exxeta.investmentservice.dtos.TransactionDto;
+import com.exxeta.investmentservice.entities.Security;
 import com.exxeta.investmentservice.entities.Transaction;
 import com.exxeta.investmentservice.service.InvestmentService;
 import com.exxeta.investmentservice.service.TransactionHandler;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/investments/user/{userId}")
@@ -32,25 +36,59 @@ public class TransactionController {
 
     @PostMapping(path = "/transactions")
     @ResponseStatus(HttpStatus.CREATED)
-    public String addNewTransaction(@PathVariable long userId, @Valid @RequestBody Transaction transaction) {
-        logger.info("Received transaction: " + transaction);
+    public String addNewTransaction(@PathVariable long userId, @Valid @RequestBody TransactionDto transactionDto) {
+        logger.info("Received transaction: " + transactionDto);
         try {
+            Transaction transaction = transformToTransactionEntity(transactionDto);
             transaction.setUserId(userId);
             transactionHandler.handleTransaction(transaction);
 //            changeAccountBalance(transaction);
-            return mapper.writeValueAsString(transaction);
+            return mapper.writeValueAsString(transactionDto);
         } catch (Exception exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
 
+    private Transaction transformToTransactionEntity(TransactionDto transactionDto) {
+        return new Transaction(
+                transactionDto.getUserId(),
+                transactionDto.getDate(),
+                transactionDto.getDepotName(),
+                transactionDto.getType(),
+                new Security(transactionDto.getIsin(), transactionDto.getSecurityName()),
+                transactionDto.getNumber(),
+                transactionDto.getPrice(),
+                transactionDto.getExpenses(),
+                transactionDto.getTotalPrice()
+        );
+    }
+
     @GetMapping(path = "/transactions")
     public String getAllTransactions(@PathVariable long userId) {
         try {
-            return mapper.writeValueAsString(investmentService.getAllTransactions(userId));
+            List<Transaction> allTransactions = investmentService.getAllTransactions(userId);
+            List<TransactionDto> transactionDtoList = new ArrayList<>();
+            allTransactions.forEach(transaction -> transactionDtoList.add(transformToTransactionDto(transaction)));
+            return mapper.writeValueAsString(transactionDtoList);
         } catch (Exception exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+
         }
+    }
+
+    private TransactionDto transformToTransactionDto(Transaction transaction) {
+        return new TransactionDto(
+                transaction.getUserId(),
+                transaction.getDate(),
+                transaction.getDepotName(),
+                transaction.getType(),
+                transaction.getSecurity().getIsin(),
+                transaction.getSecurity().getSecurityName(),
+                transaction.getNumber(),
+                transaction.getPrice(),
+                transaction.getExpenses(),
+                transaction.getTotalPrice()
+        );
     }
 
 //    private void changeAccountBalance(Transaction transaction) {
