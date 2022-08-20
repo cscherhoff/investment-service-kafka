@@ -91,6 +91,11 @@ public class TransactionController {
         );
     }
 
+    @GetMapping("/recalculate")
+    public String recalculateAll(@PathVariable long userId) {
+        return transactionHandler.recalculateAll(userId);
+    }
+
 //    private void changeAccountBalance(Transaction transaction) {
 //        if (transaction.getType().equals("Buy")) {
 //            accountService.sendAmountToAccountService(transaction.getUserId(), transaction.getDepotName(),
