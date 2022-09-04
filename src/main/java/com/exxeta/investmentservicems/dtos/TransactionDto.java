@@ -92,4 +92,20 @@ public class TransactionDto {
     public BigDecimal getTotalPrice() {
         return totalPrice;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionDto{" +
+                "userId=" + userId +
+                ", date=" + date +
+                ", depotName='" + depotName + '\'' +
+                ", type='" + type + '\'' +
+                ", isin='" + isin + '\'' +
+                ", securityName='" + securityName + '\'' +
+                ", number=" + number +
+                ", price=" + price +
+                ", expenses=" + expenses +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
 }
