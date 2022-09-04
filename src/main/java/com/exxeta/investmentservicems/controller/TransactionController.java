@@ -34,7 +34,7 @@ public class TransactionController {
 //        this.accountService = accountService;
     }
 
-    @PostMapping(path = "/transactions")
+    @PostMapping(path = "/transaction")
     @ResponseStatus(HttpStatus.CREATED)
     public String addNewTransaction(@PathVariable long userId, @Valid @RequestBody TransactionDto transactionDto) {
         logger.info("Received transaction: " + transactionDto);
