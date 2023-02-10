@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,13 @@ public class TransactionController {
         }
     }
 
+    @GetMapping(path = "/")
+    public String downloadTransactions() throws IOException {
+        logger.info("Trying to download transactions...");
+        investmentService.downloadTransactions(1234567);
+        return "download was successfully";
+    }
+
     private Transaction transformToTransactionEntity(TransactionDto transactionDto) {
         return new Transaction(
                 transactionDto.getUserId(),
@@ -77,13 +85,20 @@ public class TransactionController {
     }
 
     private TransactionDto transformToTransactionDto(Transaction transaction) {
+
+        String isin = "";
+        String securityName = "";
+        if (transaction.getSecurity() != null) {
+            isin = transaction.getSecurity().getIsin();
+            securityName = transaction.getSecurity().getSecurityName();
+        }
         return new TransactionDto(
                 transaction.getUserId(),
                 transaction.getDate(),
                 transaction.getDepotName(),
                 transaction.getType(),
-                transaction.getSecurity().getIsin(),
-                transaction.getSecurity().getSecurityName(),
+                isin,
+                securityName,
                 transaction.getNumber(),
                 transaction.getPrice(),
                 transaction.getExpenses(),
