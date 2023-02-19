@@ -1,5 +1,6 @@
 package com.exxeta.investmentservicems.controller;
 
+import com.exxeta.investmentservice.service.ImportService;
 import com.exxeta.investmentservicems.dtos.TransactionDto;
 import com.exxeta.investmentservice.entities.Security;
 import com.exxeta.investmentservice.entities.Transaction;
@@ -25,14 +26,17 @@ public class TransactionController {
     private final InvestmentService investmentService;
 
     private final TransactionHandler transactionHandler;
+
+    private final ImportService importService;
 //    private final AccountService accountService;
 
     private final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
-    public TransactionController(InvestmentService investmentService, TransactionHandler transactionHandler) {
+    public TransactionController(InvestmentService investmentService, TransactionHandler transactionHandler, ImportService importService) {
         this.investmentService = investmentService;
         this.transactionHandler = transactionHandler;
 //        this.accountService = accountService;
+        this.importService = importService;
     }
 
     @PostMapping(path = "/transactions")
@@ -55,6 +59,13 @@ public class TransactionController {
         logger.info("Trying to download transactions...");
         investmentService.downloadTransactions(1234567);
         return "download was successfully";
+    }
+
+    @GetMapping(path = "/import")
+    public String importTransactions() {
+        logger.info("Trying to import transactions....");
+        importService.importTransactions();
+        return "...import was successful";
     }
 
     private Transaction transformToTransactionEntity(TransactionDto transactionDto) {
