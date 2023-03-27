@@ -55,7 +55,7 @@ public class TransactionController {
         }
     }
 
-    @GetMapping(path = "/")
+    @GetMapping(path = "/download")
     public String downloadTransactions() throws IOException {
         logger.info("Trying to download transactions...");
         investmentService.downloadTransactions(1234567);
