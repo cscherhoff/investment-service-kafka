@@ -25,7 +25,7 @@ public class AccountMovementController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public String postAccountMovement(@PathVariable long userId, @RequestBody AccountMovement accountMovement) {
+    public String postAccountMovement(@PathVariable String userId, @RequestBody AccountMovement accountMovement) {
         logger.info("Received account movement " + accountMovement);
         try {
             accountMovement.setUserId(userId);
