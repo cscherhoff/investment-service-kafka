@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class TransactionDto {
 
     @JsonIgnore
-    private long userId;
+    private String userId;
 
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -40,7 +40,7 @@ public class TransactionDto {
     public TransactionDto() {
     }
 
-    public TransactionDto(long userId, @NotNull LocalDate date, @NotNull String depotName, @NotNull String type, String isin, String securityName, @NotNull BigDecimal number, @NotNull BigDecimal price, @NotNull BigDecimal expenses, @NotNull BigDecimal totalPrice) {
+    public TransactionDto(String userId, @NotNull LocalDate date, @NotNull String depotName, @NotNull String type, String isin, String securityName, @NotNull BigDecimal number, @NotNull BigDecimal price, @NotNull BigDecimal expenses, @NotNull BigDecimal totalPrice) {
         this.userId = userId;
         this.date = date;
         this.depotName = depotName;
@@ -53,7 +53,7 @@ public class TransactionDto {
         this.totalPrice = totalPrice;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 

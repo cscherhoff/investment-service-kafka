@@ -42,7 +42,7 @@ public class TransactionController {
 
     @PostMapping(path = "/transactions")
     @ResponseStatus(HttpStatus.CREATED)
-    public String addNewTransaction(@PathVariable long userId, @Valid @RequestBody TransactionDto transactionDto) {
+    public String addNewTransaction(@PathVariable String userId, @Valid @RequestBody TransactionDto transactionDto) {
         logger.info("Received transaction: " + transactionDto);
         try {
             Transaction transaction = transformToTransactionEntity(transactionDto);
@@ -58,7 +58,7 @@ public class TransactionController {
     @GetMapping(path = "/download")
     public String downloadTransactions() throws IOException {
         logger.info("Trying to download transactions...");
-        investmentService.downloadTransactions(1234567);
+        investmentService.downloadTransactions("1234567");
         return "download was successfully";
     }
 
@@ -90,7 +90,7 @@ public class TransactionController {
     }
 
     @GetMapping(path = "/transactions")
-    public String getAllTransactions(@PathVariable long userId) {
+    public String getAllTransactions(@PathVariable String userId) {
         try {
             List<Transaction> allTransactions = investmentService.getAllTransactions(userId);
             List<TransactionDto> transactionDtoList = new ArrayList<>();
@@ -125,7 +125,7 @@ public class TransactionController {
     }
 
     @GetMapping("/recalculate")
-    public String recalculateAll(@PathVariable long userId) {
+    public String recalculateAll(@PathVariable String userId) {
         return transactionHandler.recalculateAll(userId);
     }
 

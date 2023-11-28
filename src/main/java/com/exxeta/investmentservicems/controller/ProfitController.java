@@ -21,7 +21,7 @@ public class ProfitController {
     }
 
     @GetMapping(path = "/profit")
-    public String getAllProfits(@PathVariable long userId) {
+    public String getAllProfits(@PathVariable String userId) {
         try {
             return mapper.writeValueAsString(investmentService.getAllProfits(userId));
         } catch (Exception exception) {

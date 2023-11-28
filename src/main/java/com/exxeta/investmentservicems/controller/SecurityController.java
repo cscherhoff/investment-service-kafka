@@ -22,7 +22,7 @@ public class SecurityController {
     }
 
     @GetMapping
-    public String getAllSecurities(@PathVariable long userId) {
+    public String getAllSecurities(@PathVariable String userId) {
         try {
             return mapper.writeValueAsString(investmentService.getAllSecurities(userId));
         } catch (Exception exception) {

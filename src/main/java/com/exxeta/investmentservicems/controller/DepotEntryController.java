@@ -21,7 +21,7 @@ public class DepotEntryController {
     }
 
     @GetMapping(path = "/depotEntries")
-    public String getAllDepotEntries(@PathVariable long userId) {
+    public String getAllDepotEntries(@PathVariable String userId) {
         try {
             return mapper.writeValueAsString(investmentService.getAllDepotEntries(userId));
         } catch (Exception exception) {
@@ -30,9 +30,9 @@ public class DepotEntryController {
     }
 
     @GetMapping(path = "/depotEntries/{depotName}")
-    public String getAllDepotEntriesForAGivenDepot(@PathVariable long userId, @PathVariable String depotName) {
+    public String getAllDepotEntriesForAGivenDepot(@PathVariable String userId, @PathVariable String depotName) {
         try {
-            return mapper.writeValueAsString(investmentService.getAllDepotEntries(userId, depotName));
+            return mapper.writeValueAsString(investmentService.getAllDepotEntries("123", depotName));
         } catch (Exception exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }

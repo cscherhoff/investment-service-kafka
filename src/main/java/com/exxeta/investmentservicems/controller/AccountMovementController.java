@@ -37,7 +37,7 @@ public class AccountMovementController {
     }
 
     @GetMapping(path = "/")
-    public String getAllAccountMovements(@PathVariable long userId) {
+    public String getAllAccountMovements(@PathVariable String userId) {
         try {
             return mapper.writeValueAsString(accountMovementService.getAllAccountMovements(userId));
         } catch (Exception exception) {
