@@ -32,7 +32,7 @@ public class DepotEntryController {
     @GetMapping(path = "/depotEntries/{depotName}")
     public String getAllDepotEntriesForAGivenDepot(@PathVariable String userId, @PathVariable String depotName) {
         try {
-            return mapper.writeValueAsString(investmentService.getAllDepotEntries("123", depotName));
+            return mapper.writeValueAsString(investmentService.getAllDepotEntries(userId, depotName));
         } catch (Exception exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
