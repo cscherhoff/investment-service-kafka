@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/account-movement/user/{userId}")
+@RequestMapping(path = "/account-movement")
 public class AccountMovementController {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -23,9 +23,9 @@ public class AccountMovementController {
         this.accountMovementService = accountMovementService;
     }
 
-    @PostMapping("/")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String postAccountMovement(@PathVariable String userId, @RequestBody AccountMovement accountMovement) {
+    public String postAccountMovement(@RequestParam String userId, @RequestBody AccountMovement accountMovement) {
         logger.info("Received account movement " + accountMovement);
         try {
             accountMovement.setUserId(userId);
@@ -36,8 +36,8 @@ public class AccountMovementController {
         }
     }
 
-    @GetMapping(path = "/")
-    public String getAllAccountMovements(@PathVariable String userId) {
+    @GetMapping
+    public String getAllAccountMovements(@RequestParam String userId) {
         try {
             return mapper.writeValueAsString(accountMovementService.getAllAccountMovements(userId));
         } catch (Exception exception) {

@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/investments/user/{userId}")
+@RequestMapping(path = "/investments")
 public class InvestmentController {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -25,7 +25,7 @@ public class InvestmentController {
 
     @PostMapping(path = "/invested")
     @ResponseStatus(HttpStatus.CREATED)
-    public String postInvested(@PathVariable String userId, @Valid @RequestBody Investment investment) {
+    public String postInvested(@RequestParam String userId, @Valid @RequestBody Investment investment) {
         logger.info("Received investment: " + investment);
         try {
             investment.userId = userId;
@@ -37,7 +37,7 @@ public class InvestmentController {
     }
 
     @GetMapping(path = "/invested")
-    public String getInformations(@PathVariable String userId) {
+    public String getInformations(@RequestParam String userId) {
         try {
             return mapper.writeValueAsString(investmentHandler.getInvestedInformation(userId));
         } catch (Exception exception) {

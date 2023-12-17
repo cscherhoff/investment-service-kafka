@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/investments/user/{userId}")
+@RequestMapping(path = "/investments")
 public class TransactionController {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -42,7 +42,7 @@ public class TransactionController {
 
     @PostMapping(path = "/transactions")
     @ResponseStatus(HttpStatus.CREATED)
-    public String addNewTransaction(@PathVariable String userId, @Valid @RequestBody TransactionDto transactionDto) {
+    public String addNewTransaction(@RequestParam String userId, @Valid @RequestBody TransactionDto transactionDto) {
         logger.info("Received transaction: " + transactionDto);
         try {
             Transaction transaction = transformToTransactionEntity(transactionDto);
@@ -90,7 +90,7 @@ public class TransactionController {
     }
 
     @GetMapping(path = "/transactions")
-    public String getAllTransactions(@PathVariable String userId) {
+    public String getAllTransactions(@RequestParam String userId) {
         try {
             List<Transaction> allTransactions = investmentService.getAllTransactions(userId);
             List<TransactionDto> transactionDtoList = new ArrayList<>();
@@ -125,7 +125,7 @@ public class TransactionController {
     }
 
     @GetMapping("/recalculate")
-    public String recalculateAll(@PathVariable String userId) {
+    public String recalculateAll(@RequestParam String userId) {
         return transactionHandler.recalculateAll(userId);
     }
 

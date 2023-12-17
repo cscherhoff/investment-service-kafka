@@ -3,14 +3,11 @@ package com.exxeta.investmentservicems.controller;
 import com.exxeta.investmentservice.service.InvestmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/investments/user/{userId}")
+@RequestMapping(path = "/investments")
 public class ProfitController {
 
     private final InvestmentService investmentService;
@@ -21,7 +18,7 @@ public class ProfitController {
     }
 
     @GetMapping(path = "/profit")
-    public String getAllProfits(@PathVariable String userId) {
+    public String getAllProfits(@RequestParam String userId) {
         try {
             return mapper.writeValueAsString(investmentService.getAllProfits(userId));
         } catch (Exception exception) {

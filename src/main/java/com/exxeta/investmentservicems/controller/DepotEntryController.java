@@ -3,14 +3,11 @@ package com.exxeta.investmentservicems.controller;
 import com.exxeta.investmentservice.service.InvestmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/investments/user/{userId}")
+@RequestMapping(path = "/investments")
 public class DepotEntryController {
 
     private final InvestmentService investmentService;
@@ -21,7 +18,7 @@ public class DepotEntryController {
     }
 
     @GetMapping(path = "/depotEntries")
-    public String getAllDepotEntries(@PathVariable String userId) {
+    public String getAllDepotEntries(@RequestParam String userId) {
         try {
             return mapper.writeValueAsString(investmentService.getAllDepotEntries(userId));
         } catch (Exception exception) {
@@ -30,7 +27,7 @@ public class DepotEntryController {
     }
 
     @GetMapping(path = "/depotEntries/{depotName}")
-    public String getAllDepotEntriesForAGivenDepot(@PathVariable String userId, @PathVariable String depotName) {
+    public String getAllDepotEntriesForAGivenDepot(@RequestParam String userId, @PathVariable String depotName) {
         try {
             return mapper.writeValueAsString(investmentService.getAllDepotEntries(userId, depotName));
         } catch (Exception exception) {
