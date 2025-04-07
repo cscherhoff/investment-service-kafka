@@ -1,10 +1,22 @@
-# Base image to build a minimal JRE
-FROM --platform=$TARGETPLATFORM amazoncorretto:17.0.9-alpine AS corretto-jdk
+# 1st stage: Build the Java app
+FROM maven:3.9.6-amazoncorretto-17 AS maven-builder
 
-# Required for strip-debug to work
+WORKDIR /build
+
+# Copy everything (including submodules)
+COPY . .
+
+# Step 1: Build submodule
+RUN cd investment-service && mvn clean install -DskipTests && cd ..
+
+# Step 2: Build main project
+RUN mvn clean package -DskipTests
+
+# Stage 2: Custom JRE
+FROM amazoncorretto:17.0.9-alpine AS jdk-builder
 RUN apk add --no-cache binutils
 
-# Build a small JRE optimized for arm64
+# Build small JRE image
 RUN $JAVA_HOME/bin/jlink \
          --verbose \
          --add-modules ALL-MODULE-PATH \
@@ -14,33 +26,26 @@ RUN $JAVA_HOME/bin/jlink \
          --compress=2 \
          --output /customjre
 
-# Main app image
-FROM --platform=$TARGETPLATFORM alpine:latest
+# Stage 3: Final image
+FROM alpine:latest AS final
 
-# Set up Java environment
 ENV JAVA_HOME=/jre
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-# Copy the custom JRE from the base image
-COPY --from=corretto-jdk /customjre $JAVA_HOME
+# copy JRE from the base image
+COPY --from=jdk-builder /customjre $JAVA_HOME
 
-# Add an unprivileged user for security
+# Add app user
 ARG APPLICATION_USER=appuser
 RUN adduser --no-create-home -u 1000 -D $APPLICATION_USER
 
 # Configure working directory
-RUN mkdir /app && \
-    chown -R $APPLICATION_USER /app
+RUN mkdir /app && chown -R $APPLICATION_USER /app
 
 USER 1000
-
-# Copy application JAR
-COPY --chown=1000:1000 target/investment-service-ms-0.0.1-SNAPSHOT.jar /app/app.jar
 WORKDIR /app
-RUN mkdir export
 
-# Expose application port
-EXPOSE 8069
+COPY --from=maven-builder /build/target/*.jar /app/app.jar
 
-# Run the Java application
+EXPOSE 8068
 ENTRYPOINT [ "/jre/bin/java", "-jar", "/app/app.jar" ]
